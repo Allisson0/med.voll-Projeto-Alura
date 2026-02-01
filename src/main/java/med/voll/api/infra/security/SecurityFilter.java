@@ -31,8 +31,11 @@ public class SecurityFilter extends OncePerRequestFilter {
             var subject = tokenService.getSubject(tokenJWT);
             var usuario = repository.findByLogin(subject);
 
+            //Passamos um objeto Spring Security de usuário com informações
+            //de user, credenciais e autorizações do usuário.
             var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
 
+            //Autenticamos o usuário para o Spring
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
@@ -41,6 +44,10 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     }
 
+    //Recupera o token para validação e retorna para autenticação
+    //Se não houver token, o Spring Security cuidará disto e verificará
+    //Se é uma requisição do tipo Post para /login, se for, passará
+    //se não for, dará erro 403 - forbidden
     private String recuperarToken(HttpServletRequest request) {
         var authorizationHeader = request.getHeader("Authorization");
 
