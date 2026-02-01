@@ -17,6 +17,8 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         var tokenJWT = recuperarToken(request);
 
+
+
         //Dispara o próximo filtro (ou envia a requisição para o Controller)
         filterChain.doFilter(request, response);
 
