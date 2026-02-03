@@ -22,10 +22,12 @@ public class Consulta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Relacionamento - Muitas consultas para um médico
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "medico_id")
     private Medico medico;
 
+    // Relacionamento - Muitas consultas para um paciente
     @ManyToOne(fetch =  FetchType.LAZY)
     @JoinColumn(name = "paciente_id")
     private Paciente paciente;
