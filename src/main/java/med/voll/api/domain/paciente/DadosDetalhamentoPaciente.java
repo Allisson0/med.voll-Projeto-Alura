@@ -10,7 +10,7 @@ public record DadosDetalhamentoPaciente(
         String cpf,
         Endereco endereco
 ) {
-    DadosDetalhamentoPaciente(Paciente dados){
+    public DadosDetalhamentoPaciente(Paciente dados){
         this(dados.getId(), dados.getNome(), dados.getEmail(), dados.getTelefone(), dados.getCpf(), dados.getEndereco());
     }
 }
