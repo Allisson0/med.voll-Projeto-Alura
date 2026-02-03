@@ -39,4 +39,18 @@ public class Paciente {
         this.endereco = new Endereco(dados.endereco());
         this.ativo = true;
     }
+
+    public void atualizaPaciente(DadosAtualizaPaciente dados) {
+        //Se algum dados advindo do DadosAtualizaPaciente
+        // não for nulo, atualiza por este dado.
+        if (dados.nome() != null){
+            this.nome = dados.nome();
+        }
+        if (dados.telefone() != null){
+            this.telefone = dados.telefone();
+        }
+        if (dados.endereco() != null){
+            this.endereco.atualizarInformacoes(dados.endereco());
+        }
+    }
 }

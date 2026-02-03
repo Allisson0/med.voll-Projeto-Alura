@@ -59,4 +59,18 @@ public class PacienteController {
         return ResponseEntity.ok(page);
     }
 
+    //==== ATUALIZAR PACIENTE ====
+    @PutMapping
+    @Transactional
+    public ResponseEntity atualizarPaciente(@Valid @RequestBody DadosAtualizaPaciente dados){
+        //Recupera a referência de paciente, por meio do Id
+        // recebido do DadosAtualizaPaciente do body
+        var paciente = repository.getReferenceById(dados.id());
+        //Atualiza estes dados
+        paciente.atualizaPaciente(dados);
+
+        //Retorna os dados atualizados
+        return ResponseEntity.ok(new DadosDetalhamentoPaciente(paciente));
+    }
+
 }
