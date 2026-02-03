@@ -65,12 +65,29 @@ public class PacienteController {
     public ResponseEntity atualizarPaciente(@Valid @RequestBody DadosAtualizaPaciente dados){
         //Recupera a referência de paciente, por meio do Id
         // recebido do DadosAtualizaPaciente do body
+        // só é possível atualizar nome, telefone e o endereço
+        // do paciente. Além de necessitar o campo "id" indicando
+        // o paciente a ser alterado
         var paciente = repository.getReferenceById(dados.id());
         //Atualiza estes dados
         paciente.atualizaPaciente(dados);
 
         //Retorna os dados atualizados
         return ResponseEntity.ok(new DadosDetalhamentoPaciente(paciente));
+    }
+
+    //==== REMOVER PACIENTE ====
+    @DeleteMapping("/{id}")
+    //@Transational para comunicar mudanças para o banco de dados
+    @Transactional
+    public ResponseEntity deleterPaciente(@PathVariable Long id){
+        //Com base na referência do id,
+        // exclui o paciente
+        var paciente = repository.getReferenceById(id);
+        paciente.excluir();
+
+        //Retorna código 204 e sem build
+        return ResponseEntity.noContent().build();
     }
 
 }
