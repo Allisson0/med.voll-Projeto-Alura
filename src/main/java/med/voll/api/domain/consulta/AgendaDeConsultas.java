@@ -1,11 +1,14 @@
 package med.voll.api.domain.consulta;
 
 import med.voll.api.domain.ValidacaoException;
+import med.voll.api.domain.consulta.validacoes.ValidadorAgendamento;
 import med.voll.api.domain.medico.Medico;
 import med.voll.api.domain.medico.MedicoRepository;
 import med.voll.api.domain.paciente.PacienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AgendaDeConsultas {
@@ -19,8 +22,11 @@ public class AgendaDeConsultas {
     @Autowired
     private PacienteRepository pacienteRepository;
 
+    @Autowired
+    private List<ValidadorAgendamento> validadores;
+
     // ==== AGENDAR CONSULTA ====
-    public void agendar(DadosAgendamentoConsulta dados){
+    public DadosDetalhamentoConsulta agendar(DadosAgendamentoConsulta dados){
 
         // Verifica se os ids de médico e paciente, existem no
         // banco de dados
@@ -34,6 +40,8 @@ public class AgendaDeConsultas {
             throw new ValidacaoException("Id do médico informado não existe!");
         }
 
+        validadores.forEach(v -> v.validar(dados));
+
         // Recuperar os objetos paciente e médico para inserção no
         // objeto consulta a ser criado.
         var paciente = pacienteRepository.getReferenceById(dados.idPaciente());
@@ -45,12 +53,18 @@ public class AgendaDeConsultas {
         // do banco de dados.
         var medico = escolherMedico(dados);
 
+        if (medico == null){
+            throw new ValidacaoException("Não existe médico disponivel nesta data.");
+        }
+
         // Construtor com todos os argumentos vindo de Lombok
         // Passamos o ID como nulo, pois o JPA irá gerá-lo no
         // momento da criação da classe.
         var consulta = new Consulta(null, medico, paciente, dados.data(), null);
 
         consultaRepository.save(consulta);
+
+        return new DadosDetalhamentoConsulta(consulta);
     }
 
     // ==== ESCOLHE UM MÉDICO ====
