@@ -19,7 +19,7 @@ public class AgendaDeConsultas {
     @Autowired
     private PacienteRepository pacienteRepository;
 
-    //==== AGENDAR CONSULTA ====
+    // ==== AGENDAR CONSULTA ====
     public void agendar(DadosAgendamentoConsulta dados){
 
         // Verifica se os ids de médico e paciente, existem no
@@ -48,7 +48,7 @@ public class AgendaDeConsultas {
         // Construtor com todos os argumentos vindo de Lombok
         // Passamos o ID como nulo, pois o JPA irá gerá-lo no
         // momento da criação da classe.
-        var consulta = new Consulta(null, medico, paciente, dados.data());
+        var consulta = new Consulta(null, medico, paciente, dados.data(), null);
 
         consultaRepository.save(consulta);
     }
@@ -72,6 +72,18 @@ public class AgendaDeConsultas {
         // um médico disponível, ativo, da mesma especialidade
         // selecionada e aleatório no banco de dados.
         return medicoRepository.escolherMedicoAleatorioLivreNaData(dados.especialidade(), dados.data());
+    }
+
+    // ==== CANCELAR CONSULTA ====
+    public void cancelar(DadosCancelamentoConsulta dados){
+        // Verifica se o id da consulta existe
+        if (!consultaRepository.existsById(dados.id())){
+            throw new ValidacaoException("Id de consulta informado não existe!");
+        }
+
+        // Pega a consulta e cancela (adicionando o motivo ao corpo)
+        var consulta = consultaRepository.getReferenceById(dados.id());
+        consulta.cancelar(dados.motivo());
     }
 
 }
