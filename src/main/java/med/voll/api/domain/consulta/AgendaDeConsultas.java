@@ -19,6 +19,7 @@ public class AgendaDeConsultas {
     @Autowired
     private PacienteRepository pacienteRepository;
 
+    //==== AGENDAR CONSULTA ====
     public void agendar(DadosAgendamentoConsulta dados){
 
         // Verifica se os ids de médico e paciente, existem no
@@ -52,15 +53,24 @@ public class AgendaDeConsultas {
         consultaRepository.save(consulta);
     }
 
+    // ==== ESCOLHE UM MÉDICO ====
     private Medico escolherMedico(DadosAgendamentoConsulta dados) {
+
+        // SE o id do médico não for nulo, retorna a referência do mesmo
+        // no banco de dados.
         if (dados.idMedico() !=  null){
             return medicoRepository.getReferenceById(dados.idMedico());
         }
 
+        // SE for nula, realiza outra verificação
+        // SE a especialidade for nula, retorna uma exception
         if (dados.especialidade() == null){
             throw new ValidacaoException("Especialidade é obrigatória quando o médico não for escolhido!");
         }
 
+        // SE houver especialidade, procura no banco de dados,
+        // um médico disponível, ativo, da mesma especialidade
+        // selecionada e aleatório no banco de dados.
         return medicoRepository.escolherMedicoAleatorioLivreNaData(dados.especialidade(), dados.data());
     }
 
