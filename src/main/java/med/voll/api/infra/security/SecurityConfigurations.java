@@ -27,8 +27,9 @@ public class SecurityConfigurations {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(req -> {
-                        req.requestMatchers(HttpMethod.POST, "/login").permitAll();
-                        req.anyRequest().authenticated();
+                    req.requestMatchers(HttpMethod.POST, "/login").permitAll();
+                    req.requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll();
+                    req.anyRequest().authenticated();
                 })
                 //Ditamos que o nosso filtro de Autenticação será feito
                 // antes do filtro de autenticação do Spring
